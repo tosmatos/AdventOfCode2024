@@ -1,6 +1,7 @@
-﻿string[] inputLines = File.ReadAllLines("input.txt");
+﻿string[] inputLines = File.ReadAllLines("example_input.txt");
 List<List<int>> reports = new();
 int safeReports = 0;
+int part2SafeReports = 0;
 
 // Initialize clean reports list
 foreach (string line in inputLines)
@@ -22,6 +23,7 @@ foreach (List<int> report in reports)
 	bool isDecreasing = false;
 	bool isIncreasing = false;
 	bool isUnsafe = false;
+	int badLevels = 0;
 
 	for (int i = 0; i < report.Count; i++)
 	{
@@ -40,7 +42,7 @@ foreach (List<int> report in reports)
         if (Math.Abs(report[i] - report[i - 1]) > 3 || report[i] == report[i - 1])
 		{
 			isUnsafe = true;
-			break;
+			badLevels++;
 		}
 
 		if (isDecreasing && report[i] < report[i - 1])
@@ -50,12 +52,15 @@ foreach (List<int> report in reports)
 		else // Increasing or decreasing, difference more than 0 and less than 3 but not following increase/decrease
 		{
 			isUnsafe = true;
-			break;
+			badLevels++;
 		}
 	}
 
 	if (!isUnsafe)
 		safeReports++;
+	if (badLevels <= 1)
+		part2SafeReports++;
 }
 
 Console.WriteLine("Number of safe reports : " +  safeReports);
+Console.WriteLine("Number of safe reports with tolerance :" + part2SafeReports);
