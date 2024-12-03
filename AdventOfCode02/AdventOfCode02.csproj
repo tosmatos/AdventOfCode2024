@@ -8,6 +8,9 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Update="edge_case_input.txt">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
     <None Update="example_input.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

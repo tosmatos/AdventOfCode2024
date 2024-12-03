@@ -1,66 +1,86 @@
-﻿string[] inputLines = File.ReadAllLines("example_input.txt");
+﻿string[] inputLines = File.ReadAllLines("edge_case_input.txt");
 List<List<int>> reports = new();
-int safeReports = 0;
-int part2SafeReports = 0;
+List<List<int>> potentialReports = new();
 
 // Initialize clean reports list
 foreach (string line in inputLines)
 {
-	List<int> report = new();
-	string[] reportString = line.Split(" ");
+    List<int> report = new();
+    string[] reportString = line.Split(" ");
 
-	foreach (string reportNumber in reportString)
-	{
-		report.Add(int.Parse(reportNumber));
-	}
+    foreach (string reportNumber in reportString)
+    {
+        report.Add(int.Parse(reportNumber));
+    }
 
-	reports.Add(report);
+    reports.Add(report);
 }
 
-// Analyze each report line
-foreach (List<int> report in reports)
+int AnalyzeReports(List<List<int>> reportsToAnalyze, bool makingPart2)
 {
-	bool isDecreasing = false;
-	bool isIncreasing = false;
-	bool isUnsafe = false;
-	int badLevels = 0;
+    int safeReports = 0;
 
-	for (int i = 0; i < report.Count; i++)
-	{
-		if (i == 0) continue;
+    foreach (List<int> report in reportsToAnalyze)
+    {
+        bool isDecreasing = false;
+        bool isIncreasing = false;
+        bool isUnsafe = false;
 
-		// for second number, look if it's increasing or decreasing.
-		if (i == 1)
-		{
-			if (report[i] > report[i - 1])
-				isIncreasing = true;
-			else if (report[i] < report[i - 1])
-				isDecreasing = true;
-		}
+        for (int i = 0; i < report.Count; i++)
+        {
+            Console.Write(report[i] + " ");
 
-		// if difference is more than 3 OR no difference, it's unsafe
-        if (Math.Abs(report[i] - report[i - 1]) > 3 || report[i] == report[i - 1])
-		{
-			isUnsafe = true;
-			badLevels++;
-		}
+            if (i != report.Count - 1)
+            {
+                if (report[i] < report[i + 1])
+                {
+                    isIncreasing = true;
+                }
+                else if (report[i] > report[i + 1])
+                {
+                    isDecreasing = true;
+                }
+                else
+                {
+                    isUnsafe = true;
+                }
 
-		if (isDecreasing && report[i] < report[i - 1])
-			continue;
-		else if (isIncreasing && report[i] > report[i - 1])
-			continue;
-		else // Increasing or decreasing, difference more than 0 and less than 3 but not following increase/decrease
-		{
-			isUnsafe = true;
-			badLevels++;
-		}
-	}
+                //if difference is more than 3 OR no difference, it's unsafe
+                if (Math.Abs(report[i] - report[i + 1]) > 3 || report[i] == report[i + 1])
+                {
+                    isUnsafe = true;
+                }
 
-	if (!isUnsafe)
-		safeReports++;
-	if (badLevels <= 1)
-		part2SafeReports++;
+                // Increasing or decreasing, difference more than 0 and less than 3 but not following increase/decrease
+                if (isIncreasing && report[i] > report[i + 1] || isDecreasing && report[i] < report[i + 1])
+                {
+                    isUnsafe = true;
+                }
+            }
+
+            if (isUnsafe && makingPart2)
+            {
+                List<int> potentialReport = new(report);
+                if (isIncreasing && isDecreasing)
+                    potentialReport.RemoveAt(i - 1);
+                else
+                    potentialReport.RemoveAt(i);
+                potentialReports.Add(potentialReport);
+                break;
+            }
+        }
+
+        Console.WriteLine("id : " + isUnsafe);
+
+        if (!isUnsafe)
+        {
+            safeReports++;
+        }
+    }
+
+    return safeReports; 
 }
 
-Console.WriteLine("Number of safe reports : " +  safeReports);
-Console.WriteLine("Number of safe reports with tolerance :" + part2SafeReports);
+
+Console.WriteLine("Number of safe reports : " + AnalyzeReports(reports, true));
+Console.WriteLine("Number of safe reports with tolerance : " + AnalyzeReports(potentialReports, false));
