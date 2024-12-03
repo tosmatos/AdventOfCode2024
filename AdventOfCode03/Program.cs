@@ -9,13 +9,15 @@ for (int i = 0; i < inputLines.Length; i++)
 
 Console.WriteLine("Coucou !");
 
+bool isEnabled = true;
+
 for (int i = 0; i < mulStrings.Count; i++)
 {
 	string mulString = mulStrings[i];
-	if (mulString.Length != 0 && mulString[0] == '(')
-	{
-		string[] mulNums = mulString.Split(['(', ')']).Where(s => !string.IsNullOrEmpty(s)).ToArray();
-		
+    string[] mulNums = mulString.Split(['(', ')']).Where(s => !string.IsNullOrEmpty(s)).ToArray();
+
+    if (mulString.Length != 0 && mulString[0] == '(')
+	{		
 		string mulNum = mulNums[0];
 		int a = 0;
 		int b = 0;
@@ -24,7 +26,8 @@ for (int i = 0; i < mulStrings.Count; i++)
 			string[] finalMul = mulNum.Split(",");
 			//Console.WriteLine("Found finalMul :" + finalMul[0] + " and "+ finalMul[1]);
 
-			if (finalMul.Length == 2 &&Int32.TryParse(finalMul[0], out a) && Int32.TryParse(finalMul[1], out b))
+			//delete isEnabled to get result for part 1
+			if (isEnabled && finalMul.Length == 2 &&Int32.TryParse(finalMul[0], out a) && Int32.TryParse(finalMul[1], out b))
 			{
 				Console.WriteLine("+++++++++++++++ Added " + mulString + " id : " + i + " | Values found : " + a + " " + b);
 				part1Total += a * b;
@@ -32,9 +35,16 @@ for (int i = 0; i < mulStrings.Count; i++)
 			else
 				Console.WriteLine("--------------- Didn't add " + mulString + " id : " + i);
 		}
-		
-		//Console.WriteLine("Hello");
-	}
+    }
+
+    // check remaining substrings
+    for (int j = 0; j < mulNums.Length; j++)
+    {
+        if (mulNums[j].Contains("don't"))
+            isEnabled = false;
+        else if (mulNums[j].Contains("do"))
+            isEnabled = true;
+    }
 }
 
  Console.WriteLine("Multiplication Total : " + part1Total);
