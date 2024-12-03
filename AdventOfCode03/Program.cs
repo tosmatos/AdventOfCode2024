@@ -14,28 +14,25 @@ for (int i = 0; i < mulStrings.Count; i++)
 	string mulString = mulStrings[i];
 	if (mulString.Length != 0 && mulString[0] == '(')
 	{
-		string[] mulNums = mulString.Split(['(', ')']);
+		string[] mulNums = mulString.Split(['(', ')']).Where(s => !string.IsNullOrEmpty(s)).ToArray();
 		
-		for (int j = 0; j < mulNums.Length; j++)
+		string mulNum = mulNums[0];
+		int a = 0;
+		int b = 0;
+		if (mulNum.Contains(','))
 		{
-			string mulNum = mulNums[j];
-			int a = 0;
-			int b = 0;
-			if (mulNum.Contains(','))
-			{
-				string[] finalMul = mulNum.Split(",");
-				//Console.WriteLine("Found finalMul :" + finalMul[0] + " and "+ finalMul[1]);
+			string[] finalMul = mulNum.Split(",");
+			//Console.WriteLine("Found finalMul :" + finalMul[0] + " and "+ finalMul[1]);
 
-				if (finalMul.Length == 2 &&Int32.TryParse(finalMul[0], out a) && Int32.TryParse(finalMul[1], out b))
-				{
-					Console.WriteLine("+++++++++++++++ Added " + mulString + " id : " + i);
-					part1Total += a * b;
-					break;
-				}
-				else
-					Console.WriteLine("--------------- Didn't add " + mulString + " id : " + i);
+			if (finalMul.Length == 2 &&Int32.TryParse(finalMul[0], out a) && Int32.TryParse(finalMul[1], out b))
+			{
+				Console.WriteLine("+++++++++++++++ Added " + mulString + " id : " + i + " | Values found : " + a + " " + b);
+				part1Total += a * b;
 			}
+			else
+				Console.WriteLine("--------------- Didn't add " + mulString + " id : " + i);
 		}
+		
 		//Console.WriteLine("Hello");
 	}
 }
