@@ -1,8 +1,9 @@
-﻿string[] inputLines = File.ReadAllLines("example_input.txt");
+﻿string[] inputLines = File.ReadAllLines("input.txt");
 
 int xmasCount = 0;
 
 char[,] grid = new char[inputLines.Length, inputLines[0].Length];
+char[,]newGrid = new char[inputLines.Length, inputLines[0].Length];
 
 // Transform string[] to char[,]
 for (int i = 0; i < inputLines.Length; i++)
@@ -56,7 +57,7 @@ for (int row = 0; row < grid.GetLength(0); row++) // rows
 				}
 				if (row - i >= 0 && col - i >= 0)
 				{
-					upLeft += grid[row - i, col - 1];
+					upLeft += grid[row - i, col - i];
 				}
 				if (row + i < grid.GetLength(0) && col - i >= 0)
 				{
@@ -69,9 +70,34 @@ for (int row = 0; row < grid.GetLength(0); row++) // rows
 			}
 
 			string[] buildXmases = {right, left, up, down, upRight, upLeft, downRight, downLeft};
-			xmasCount += buildXmases.Where(s => s == "XMAS").Count();
+			int localXmasCount = buildXmases.Where(s => s == "XMAS").Count();
+			if (localXmasCount > 0)
+				newGrid[row, col] = 'X';
+			else
+				newGrid[row, col] = '.';
+			xmasCount += localXmasCount;
+		}
+		else
+		{
+			newGrid[row, col] = '.';
 		}
 	}
 }
 
+// for debug
+void DisplayGrid()
+{
+    for (int row = 0; row < newGrid.GetLength(0); row++)
+    {
+        for (int column = 0; column < newGrid.GetLength(1); column++)
+        {
+            Console.SetCursorPosition(column * 2, row);
+            Console.Write(newGrid[row, column]);
+        }
+        Console.WriteLine();
+    }
+    Console.SetCursorPosition(0, newGrid.GetLength(0) + 1);
+}
+
+//DisplayGrid();
 Console.WriteLine("Total number of 'XMAS' : " + xmasCount);
